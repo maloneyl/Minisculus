@@ -1,6 +1,7 @@
 class MarkI
 
   def initialize(wheel_setting)
+    raise ArgumentError.new("Wheel setting must be within 0-9") if wheel_setting < 0 || wheel_setting > 9
     @wheel_setting = wheel_setting
   end
 
@@ -13,12 +14,17 @@ class MarkI
             "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
             ".", ",", "?", "!", "'", "\"", " "
            ]
-    new_input = ''
+    encrypted_input = ''
     input.each_char do |i|
       input_char_index = keys.index(i)
-      new_key = keys[input_char_index + @wheel_setting] # ignore looping back to start for now
-      new_input += new_key
-    end
-    new_input # otherwise, it's the original input that's returned
+      index_shift = input_char_index + @wheel_setting
+      if index_shift <= keys.length - 1
+        encrypted_key = keys[index_shift]
+      else
+        encrypted_key = keys[index_shift - keys.length]
+      end
+      encrypted_input.concat(encrypted_key)
+    end # returns 'input'
+    encrypted_input
   end
 end
